@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MieszkaniesRetrievalLogic {
+public class MieszkaniesRetrieval {
 
     public static Map<String, List<GenericMieszkanieModel>> getMieszkanies() {
         Map<String, List<GenericMieszkanieModel>> result = new HashMap<>();

@@ -9,8 +9,11 @@ public class OLXSource implements GenericSource {
     public static List<GenericMieszkanieModel> getMieszkaniesData() {
         List<GenericMieszkanieModel> list = new ArrayList<>();
         RestTemplate template = new RestTemplate();
-//        String url = "https://www.olx.pl/api/v1/offers/?offset=0&limit=50&query=bielany&category_id=14&region_id=2&city_id=17871&sort_by=created_at%3Adesc";
-        String url = "https://www.olx.pl/api/v1/offers/?offset=0&limit=50&query=bielany&category_id=14&region_id=2&city_id=17871";
+        String wantedSqm = "45";
+        String wantedMaxPrice = "800000";
+        String url =
+                String.format("https://www.olx.pl/api/v1/offers/?offset=0&limit=50&query=bielany&category_id=14&region_id=2&city_id=17871&sort_by=created_at:desc&filter_float_m:from=%s&filter_float_price:to=%s",
+                        wantedSqm, wantedMaxPrice);
         ResponseEntity<Object> response = template.getForEntity(url, Object.class);
         ArrayList<LinkedHashMap<String, Object>> data = (ArrayList<LinkedHashMap<String, Object>>)((LinkedHashMap)response.getBody()).get("data");
         data.forEach(x -> {

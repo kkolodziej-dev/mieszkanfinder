@@ -1,7 +1,7 @@
 package com.example.mieszkanfinder.controllers;
 
 import com.example.mieszkanfinder.datamodels.GenericMieszkanieModel;
-import com.example.mieszkanfinder.logic.MieszkaniesRetrievalLogic;
+import com.example.mieszkanfinder.logic.MieszkaniesRetrieval;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +13,6 @@ public class MieszkanFinderControllers {
 
     @GetMapping(value = "/mieszkanies", produces = "application/json")
     public Map<String, List<GenericMieszkanieModel>> getMieszkanies() {
-        return MieszkaniesRetrievalLogic.getMieszkanies();
+        return MieszkaniesRetrieval.getMieszkanies();
     }
 }
