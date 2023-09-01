@@ -1,27 +1,37 @@
 package com.example.mieszkanfinder.logic;
 
 import com.example.mieszkanfinder.datamodels.GenericMieszkanieModel;
+import com.example.mieszkanfinder.helpers.GlobalCredentialsStore;
+import com.example.mieszkanfinder.helpers.RepresentationConverter;
+import com.example.mieszkanfinder.mailing.EmailServiceImpl;
 import com.example.mieszkanfinder.sources.OLXSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static com.example.mieszkanfinder.helpers.GlobalCredentialsStore.TIME_NOW;
+
+@Component
 public class MieszkaniesRetrieval {
 
-    static String TIME_NOW = "";
+    @Autowired
+    EmailServiceImpl emailService;
 
-    public static Map<String, List<GenericMieszkanieModel>> getMieszkanies() {
+    public List<GenericMieszkanieModel> getMieszkanies() {
         // Set current time
-        TIME_NOW = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        System.out.println(TIME_NOW);
+        TIME_NOW = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-        Map<String, List<GenericMieszkanieModel>> result = new HashMap<>();
+        List<GenericMieszkanieModel> result = new LinkedList<>();
 
-        result.put("olx", OLXSource.getMieszkaniesData());
+        result.addAll(OLXSource.getMieszkaniesData());
 
-        return result;
+        List<GenericMieszkanieModel> finalList = result.stream().filter(x -> x.getDateAdded().startsWith(TIME_NOW)).toList();
+
+        emailService.sendMailForNewMieszkanies(finalList);
+
+        return finalList;
     }
 }
