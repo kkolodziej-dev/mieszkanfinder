@@ -10,12 +10,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GenericMieszkanieModel {
-    private String name;
-    private String dateAdded;
-    private String url;
-    private String pricePerSqm;
-    private String floor;
-    private String price;
-    private String sqm;
-    private String rooms;
+    private String tytulOferty;
+    private String cena;
+    private String metraz;
+    private String pokoje;
+    private String uRL;
+    private String cenaZaMetr;
+    private String pietro;
+    private String dataDodaniaOgloszenia;
 }

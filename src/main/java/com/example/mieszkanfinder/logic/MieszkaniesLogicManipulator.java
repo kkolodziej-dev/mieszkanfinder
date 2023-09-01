@@ -21,7 +21,7 @@ public class MieszkaniesLogicManipulator {
 
         var resultList = OLXSource.getMieszkaniesData();
 
-        todayMieszkanies = resultList.stream().filter(x -> x.getDateAdded().startsWith(TIME_NOW)).toList();
+        todayMieszkanies = resultList.stream().filter(x -> x.getDataDodaniaOgloszenia().startsWith(TIME_NOW)).toList();
 
         return todayMieszkanies;
     }

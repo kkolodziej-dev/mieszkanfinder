@@ -24,42 +24,46 @@ public class OLXSource implements GenericSource {
         ArrayList<LinkedHashMap<String, Object>> data = (ArrayList<LinkedHashMap<String, Object>>)((LinkedHashMap)response.getBody()).get("data");
         data.forEach(x -> {
             GenericMieszkanieModel mieszkanieModel = new GenericMieszkanieModel();
-            mieszkanieModel.setName((String)x.get("title"));
-            mieszkanieModel.setUrl((String)x.get("url"));
-            mieszkanieModel.setDateAdded((String)x.get("created_time"));
+            mieszkanieModel.setTytulOferty((String)x.get("title"));
+            mieszkanieModel.setURL((String)x.get("url"));
+            mieszkanieModel.setDataDodaniaOgloszenia((String)x.get("created_time"));
             ((ArrayList)(x.get("params"))).forEach(y -> {
                 LinkedHashMap<String, Object> param = (LinkedHashMap<String, Object>)y;
+                Object currentItem = param.get("key");
 
-                // price/m2
-                if (param.get("key") != null && param.get("key").equals("price_per_m")) {
-                    String pricePerSqm = ((LinkedHashMap<String, String>) param.get("value")).get("label");
-                    mieszkanieModel.setPricePerSqm(pricePerSqm);
+                if (currentItem != null) {
+                    // price/m2
+                    if (param.get("key").equals("price_per_m")) {
+                        String pricePerSqm = ((LinkedHashMap<String, String>) param.get("value")).get("label");
+                        mieszkanieModel.setCenaZaMetr(pricePerSqm);
+                    }
+
+                    // floor
+                    if (param.get("key").equals("floor_select")) {
+                        String floor = ((LinkedHashMap<String, String>) param.get("value")).get("label");
+                        mieszkanieModel.setPietro(floor);
+                    }
+
+                    // price
+                    if (param.get("key").equals("price")) {
+                        Integer price = (Integer)((LinkedHashMap<String, Object>) param.get("value")).get("value");
+                        String finalPrice = price + "zł";
+                        mieszkanieModel.setCena(finalPrice);
+                    }
+
+                    // sqm
+                    if (param.get("key").equals("m")) {
+                        String sqm = ((LinkedHashMap<String, String>) param.get("value")).get("label");
+                        mieszkanieModel.setMetraz(sqm);
+                    }
+
+                    // sqm
+                    if (param.get("key").equals("rooms")) {
+                        String rooms = ((LinkedHashMap<String, String>) param.get("value")).get("label");
+                        mieszkanieModel.setPokoje(rooms);
+                    }
                 }
 
-                // floor
-                if (param.get("key") != null && param.get("key").equals("floor_select")) {
-                    String floor = ((LinkedHashMap<String, String>) param.get("value")).get("label");
-                    mieszkanieModel.setFloor(floor);
-                }
-
-                // price
-                if (param.get("key") != null && param.get("key").equals("price")) {
-                    Integer price = (Integer)((LinkedHashMap<String, Object>) param.get("value")).get("value");
-                    String finalPrice = price + "zł";
-                    mieszkanieModel.setPrice(finalPrice);
-                }
-
-                // sqm
-                if (param.get("key") != null && param.get("key").equals("m")) {
-                    String sqm = ((LinkedHashMap<String, String>) param.get("value")).get("label");
-                    mieszkanieModel.setSqm(sqm);
-                }
-
-                // sqm
-                if (param.get("key") != null && param.get("key").equals("rooms")) {
-                    String rooms = ((LinkedHashMap<String, String>) param.get("value")).get("label");
-                    mieszkanieModel.setRooms(rooms);
-                }
             });
             list.add(mieszkanieModel);
         });
@@ -71,7 +75,7 @@ public class OLXSource implements GenericSource {
 
     private static void sortListByDate(List<GenericMieszkanieModel> list) {
         final DateTimeFormatter dfm = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
-        Comparator<GenericMieszkanieModel> comparator = Comparator.comparing(s -> LocalDateTime.parse(s.getDateAdded(), dfm));
+        Comparator<GenericMieszkanieModel> comparator = Comparator.comparing(s -> LocalDateTime.parse(s.getDataDodaniaOgloszenia(), dfm));
         Comparator<GenericMieszkanieModel> finalComparator = comparator.reversed();
         list.sort(finalComparator);
     }
