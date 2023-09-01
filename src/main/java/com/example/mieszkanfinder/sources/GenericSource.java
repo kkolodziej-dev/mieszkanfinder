@@ -4,6 +4,8 @@ import com.example.mieszkanfinder.datamodels.GenericMieszkanieModel;
 
 import java.util.List;
 
-public abstract class GenericSource {
-    public abstract List<GenericMieszkanieModel> getMieszkaniesData();
+public interface GenericSource {
+    static List<GenericMieszkanieModel> getMieszkaniesData() {
+        return null;
+    }
 }

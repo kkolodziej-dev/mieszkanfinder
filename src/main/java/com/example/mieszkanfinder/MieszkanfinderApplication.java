@@ -10,8 +10,6 @@ public class MieszkanfinderApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MieszkanfinderApplication.class, args);
-		OLXSource olxSource = new OLXSource();
-		olxSource.getMieszkaniesData();
 	}
 
 }
