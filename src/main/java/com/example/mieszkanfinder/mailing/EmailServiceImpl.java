@@ -18,9 +18,8 @@ public class EmailServiceImpl {
     @Autowired
     private JavaMailSender emailSender;
 
-    public void sendMailForNewMieszkanies(List<GenericMieszkanieModel> list) {
-        String stringResult = RepresentationConverter.convertMieszkaniesToRepresentation(list);
-        GlobalCredentialsStore.RECEIVERS_EMAILS.forEach(x -> sendSimpleMessage(x, "Mieszkania z dnia " + TIME_NOW, stringResult));
+    public void sendMailForNewMieszkanies(String emailBody) {
+        GlobalCredentialsStore.RECEIVERS_EMAILS.forEach(x -> sendSimpleMessage(x, "Mieszkania z dnia " + TIME_NOW, emailBody));
     }
 
     private void sendSimpleMessage(String to, String subject, String text) {
