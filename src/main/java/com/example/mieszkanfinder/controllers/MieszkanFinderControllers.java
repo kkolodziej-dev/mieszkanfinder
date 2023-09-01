@@ -17,12 +17,12 @@ public class MieszkanFinderControllers {
     MieszkaniesLogicManipulator mieszkaniesRetrieval;
 
     @GetMapping(value = "/mieszkanies", produces = "application/json")
-    public List<GenericMieszkanieModel> sendMieszkaniesToSubstribers() {
+    public List<GenericMieszkanieModel> getMieszkaniesData() {
         return mieszkaniesRetrieval.getMieszkanies();
     }
 
-    @PostMapping(value = "/mieszkanies", produces = "application/json")
-    public String publishMieszkaniesToSubscribers() {
+    @PostMapping(value = "/mieszkanies/newsletter", produces = "application/json")
+    public String sendMieszkaniesNewsletter() {
         mieszkaniesRetrieval.publishMieszkaniesToSubscribers();
         StringBuilder builder = new StringBuilder();
         GlobalCredentialsStore.RECEIVERS_EMAILS.forEach(x -> builder.append(x).append(", "));
