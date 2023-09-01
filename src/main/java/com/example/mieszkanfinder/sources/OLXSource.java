@@ -3,14 +3,20 @@ package com.example.mieszkanfinder.sources;
 import com.example.mieszkanfinder.datamodels.GenericMieszkanieModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class OLXSource implements GenericSource {
+
+    // search parameters
+    static String wantedSqm = "45";
+    static String wantedMaxPrice = "800000";
+
     public static List<GenericMieszkanieModel> getMieszkaniesData() {
         List<GenericMieszkanieModel> list = new ArrayList<>();
         RestTemplate template = new RestTemplate();
-        String wantedSqm = "45";
-        String wantedMaxPrice = "800000";
         String url =
                 String.format("https://www.olx.pl/api/v1/offers/?offset=0&limit=50&query=bielany&category_id=14&region_id=2&city_id=17871&sort_by=created_at:desc&filter_float_m:from=%s&filter_float_price:to=%s",
                         wantedSqm, wantedMaxPrice);
@@ -57,6 +63,16 @@ public class OLXSource implements GenericSource {
             });
             list.add(mieszkanieModel);
         });
+
+        sortListByDate(list);
+
         return list;
+    }
+
+    private static void sortListByDate(List<GenericMieszkanieModel> list) {
+        final DateTimeFormatter dfm = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+        Comparator<GenericMieszkanieModel> comparator = Comparator.comparing(s -> LocalDateTime.parse(s.getDateAdded(), dfm));
+        Comparator<GenericMieszkanieModel> finalComparator = comparator.reversed();
+        list.sort(finalComparator);
     }
 }
