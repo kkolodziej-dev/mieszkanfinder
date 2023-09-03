@@ -28,7 +28,13 @@ public class MieszkaniesLogicManipulator {
 
     public void publishMieszkaniesToSubscribers() {
 
-        String stringResult = RepresentationConverter.convertMieszkaniesToRepresentation(getMieszkanies());
+        List<GenericMieszkanieModel> result = getMieszkanies();
+
+        if (result == null || result.isEmpty()) {
+            return;
+        }
+
+        String stringResult = RepresentationConverter.convertMieszkaniesToRepresentation(result);
 
         emailService.sendMailForNewMieszkanies(stringResult);
     }
