@@ -2,7 +2,8 @@ package com.example.mieszkanfinder.controllers;
 
 import com.example.mieszkanfinder.datamodels.GenericMieszkanieModel;
 import com.example.mieszkanfinder.helpers.GlobalCredentialsStore;
-import com.example.mieszkanfinder.logic.MieszkaniesLogicManipulator;
+import com.example.mieszkanfinder.logic.GetMieszkaniesLogicManipulator;
+import com.example.mieszkanfinder.logic.PostNewsletterMieszkaniesManipulator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,16 +15,23 @@ import java.util.List;
 public class MieszkanFinderControllers {
 
     @Autowired
-    MieszkaniesLogicManipulator mieszkaniesRetrieval;
+    GetMieszkaniesLogicManipulator getMieszkaniesManipulator;
+
+    @Autowired
+    PostNewsletterMieszkaniesManipulator postMieszkaniesManipulator;
 
     @GetMapping(value = "/mieszkanies", produces = "application/json")
     public List<GenericMieszkanieModel> getMieszkaniesData() {
-        return mieszkaniesRetrieval.getMieszkanies();
+        return getMieszkaniesManipulator.getMieszkanies();
     }
 
-    @PostMapping(value = "/mieszkanies/newsletter", produces = "application/json")
+    @PostMapping(value = "/mieszkanies/publish", produces = "application/json")
     public String sendMieszkaniesNewsletter() {
-        mieszkaniesRetrieval.publishMieszkaniesToSubscribers();
+        int numOfNewMieszkanies = postMieszkaniesManipulator.publishMieszkaniesToSubscribers();
+        if (numOfNewMieszkanies == 0) {
+            return "Nie znaleziono nowych mieszkan, maile nie zostaly wyslane.";
+        }
+
         StringBuilder builder = new StringBuilder();
         GlobalCredentialsStore.RECEIVERS_EMAILS.forEach(x -> builder.append(x).append(", "));
         return "Maile z dzisiejszymi mieszkaniami wyslane do: " + builder;
