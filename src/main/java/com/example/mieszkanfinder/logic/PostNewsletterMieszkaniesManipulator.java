@@ -1,5 +1,6 @@
 package com.example.mieszkanfinder.logic;
 
+import com.example.mieszkanfinder.cache.TodaysMieszkaniesStore;
 import com.example.mieszkanfinder.datamodels.GenericMieszkanieModel;
 import com.example.mieszkanfinder.helpers.RepresentationConverter;
 import com.example.mieszkanfinder.mailing.EmailServiceImpl;
@@ -13,21 +14,18 @@ public class PostNewsletterMieszkaniesManipulator {
     @Autowired
     EmailServiceImpl emailService;
 
-    @Autowired
-    GetMieszkaniesLogicManipulator getMieszkaniesManipulator;
-
     public int publishMieszkaniesToSubscribers() {
 
-        List<GenericMieszkanieModel> result = getMieszkaniesManipulator.getMieszkanies();
+        List<GenericMieszkanieModel> todaysMieszkanies = TodaysMieszkaniesStore.getTodaysMieszkaniesDelta();
 
-        if (result == null || result.isEmpty()) {
+        if (todaysMieszkanies == null || todaysMieszkanies.isEmpty()) {
             return 0;
         }
 
-        String stringResult = RepresentationConverter.convertMieszkaniesToRepresentation(result);
+        String stringResult = RepresentationConverter.convertMieszkaniesToRepresentation(todaysMieszkanies);
 
         emailService.sendMailForNewMieszkanies(stringResult);
 
-        return result.size();
+        return todaysMieszkanies.size();
     }
 }

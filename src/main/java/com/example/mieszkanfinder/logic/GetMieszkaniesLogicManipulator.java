@@ -3,6 +3,7 @@ import com.example.mieszkanfinder.datamodels.GenericMieszkanieModel;
 import com.example.mieszkanfinder.sources.OLXSource;
 import org.springframework.stereotype.Component;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.mieszkanfinder.helpers.GlobalCredentialsStore.TIME_NOW;
 
@@ -13,6 +14,6 @@ public class GetMieszkaniesLogicManipulator {
 
         List<GenericMieszkanieModel> allMieszkaniesList = OLXSource.getMieszkaniesData();
 
-        return allMieszkaniesList.stream().filter(x -> x.getDataDodaniaOgloszenia().startsWith(TIME_NOW)).toList();
+        return allMieszkaniesList.stream().filter(x -> x.getDataDodaniaOgloszenia().startsWith(TIME_NOW)).collect(Collectors.toList());
     }
 }
